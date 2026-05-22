@@ -1,42 +1,48 @@
-import { signIn } from "@/lib/auth"
+"use client"
+
+import { signIn } from "next-auth/react"
+import { useState } from "react"
 
 export default function LoginPage() {
-  return (
-    <main className="min-h-screen bg-black flex items-center justify-center text-white">
-      <form
-        action={async (formData) => {
-          "use server"
+  const [loading, setLoading] = useState(false)
 
-          await signIn("credentials", {
-            username: formData.get("username"),
-            password: formData.get("password"),
-            redirectTo: "/admin/products",
-          })
-        }}
-        className="bg-zinc-900 p-10 rounded-3xl w-full max-w-md space-y-5"
-      >
-        <h1 className="text-4xl font-bold mb-5 text-center">
-          Admin Login
-        </h1>
+  async function action(formData: FormData) {
+    setLoading(true)
+
+    await signIn("credentials", {
+      username: String(formData.get("username") || ""),
+      password: String(formData.get("password") || ""),
+      redirect: true,
+      callbackUrl: "/admin/products",
+    })
+
+    setLoading(false)
+  }
+
+  return (
+    <main className="min-h-screen flex items-center justify-center bg-black text-white">
+      <form action={action} className="space-y-4 w-[300px]">
 
         <input
           name="username"
           placeholder="Username"
-          className="w-full p-4 rounded-xl bg-zinc-800"
+          className="w-full p-3 bg-zinc-900 rounded"
         />
 
         <input
           name="password"
           type="password"
           placeholder="Password"
-          className="w-full p-4 rounded-xl bg-zinc-800"
+          className="w-full p-3 bg-zinc-900 rounded"
         />
 
         <button
-          className="w-full bg-white text-black py-4 rounded-xl font-bold"
+          disabled={loading}
+          className="w-full bg-white text-black py-3 rounded font-bold"
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
+
       </form>
     </main>
   )
