@@ -1,7 +1,12 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const {
+  handlers,
+  signIn,
+  signOut,
+  auth,
+} = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
 
   session: {
@@ -20,8 +25,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
 
       async authorize(credentials) {
-        const username = credentials?.username?.toString()
-        const password = credentials?.password?.toString()
+        const username = credentials?.username
+        const password = credentials?.password
 
         if (!username || !password) return null
 

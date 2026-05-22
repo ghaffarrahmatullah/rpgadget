@@ -4,46 +4,47 @@ import { signIn } from "next-auth/react"
 import { useState } from "react"
 
 export default function LoginPage() {
-  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  async function action(formData: FormData) {
-    setLoading(true)
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
 
-    await signIn("credentials", {
-      username: String(formData.get("username") || ""),
-      password: String(formData.get("password") || ""),
-      redirect: true,
-      callbackUrl: "/admin/products",
+    const formData = new FormData(e.currentTarget)
+
+    const res = await signIn("credentials", {
+      username: formData.get("username"),
+      password: formData.get("password"),
+      redirect: false,
     })
 
-    setLoading(false)
+    if (res?.error) {
+      setError("Username atau password salah")
+      return
+    }
+
+    window.location.href = "/admin/products"
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-black text-white">
-      <form action={action} className="space-y-4 w-[300px]">
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <input
+        name="username"
+        placeholder="username"
+        className="border p-2"
+      />
 
-        <input
-          name="username"
-          placeholder="Username"
-          className="w-full p-3 bg-zinc-900 rounded"
-        />
+      <input
+        name="password"
+        type="password"
+        placeholder="password"
+        className="border p-2"
+      />
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          className="w-full p-3 bg-zinc-900 rounded"
-        />
+      <button type="submit" className="bg-black text-white px-4 py-2">
+        Login
+      </button>
 
-        <button
-          disabled={loading}
-          className="w-full bg-white text-black py-3 rounded font-bold"
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-
-      </form>
-    </main>
+      {error && <p className="text-red-500">{error}</p>}
+    </form>
   )
 }
