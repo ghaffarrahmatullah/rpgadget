@@ -12,7 +12,9 @@ export default async function EditProductPage({ params }: Props) {
     where: { id },
   })
 
-  if (!product) return redirect("/admin/products")
+  if (!product) {
+    redirect("/admin/products")
+  }
 
   async function updateProduct(formData: FormData) {
     "use server"
@@ -20,13 +22,13 @@ export default async function EditProductPage({ params }: Props) {
     await db.product.update({
       where: { id },
       data: {
-        name: formData.get("name") as string,
-        price: Number(formData.get("price")),
-        imageUrl: formData.get("imageUrl") as string,
-        storage: formData.get("storage") as string,
-        color: formData.get("color") as string,
-        condition: formData.get("condition") as string,
-        battery: Number(formData.get("battery")),
+        name: String(formData.get("name") || ""),
+        price: Number(formData.get("price") || 0),
+        imageUrl: String(formData.get("imageUrl") || ""),
+        storage: String(formData.get("storage") || ""),
+        color: String(formData.get("color") || ""),
+        condition: String(formData.get("condition") || ""),
+        battery: Number(formData.get("battery") || 0),
       },
     })
 
@@ -41,19 +43,19 @@ export default async function EditProductPage({ params }: Props) {
           Edit Product
         </h1>
 
-        <form action={updateProduct} className="space-y-6">
+        <form action={updateProduct} className="space-y-4">
 
-          <input name="name" defaultValue={product.name ?? ""} />
-          <input name="price" defaultValue={product.price ?? 0} />
-          <input name="imageUrl" defaultValue={product.imageUrl ?? ""} />
-          <input name="storage" defaultValue={product.storage ?? ""} />
-          <input name="color" defaultValue={product.color ?? ""} />
-          <input name="condition" defaultValue={product.condition ?? ""} />
-          <input name="battery" defaultValue={product.battery ?? 100} />
+          <input name="name" defaultValue={product.name ?? ""} className="w-full p-3 bg-zinc-900 rounded" />
+          <input name="price" type="number" defaultValue={product.price ?? 0} className="w-full p-3 bg-zinc-900 rounded" />
+          <input name="imageUrl" defaultValue={product.imageUrl ?? ""} className="w-full p-3 bg-zinc-900 rounded" />
+          <input name="storage" defaultValue={product.storage ?? ""} className="w-full p-3 bg-zinc-900 rounded" />
+          <input name="color" defaultValue={product.color ?? ""} className="w-full p-3 bg-zinc-900 rounded" />
+          <input name="condition" defaultValue={product.condition ?? ""} className="w-full p-3 bg-zinc-900 rounded" />
+          <input name="battery" type="number" defaultValue={product.battery ?? 100} className="w-full p-3 bg-zinc-900 rounded" />
 
           <button
             type="submit"
-            className="bg-white text-black px-8 py-4 rounded-full"
+            className="bg-white text-black px-8 py-4 rounded-xl font-semibold hover:scale-105 transition"
           >
             Save Changes
           </button>

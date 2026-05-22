@@ -1,89 +1,60 @@
 import { db } from "@/lib/db"
+import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 
-export default function CreateProductPage() {
+export default async function CreateProductPage() {
+  const session = await auth()
+
+  if (!session) {
+    redirect("/login")
+  }
+
   async function createProduct(formData: FormData) {
     "use server"
 
-    await db.product.create({
-      data: {
-        name: formData.get("name") as string,
-        price: Number(formData.get("price")),
-        storage: formData.get("storage") as string,
-        color: formData.get("color") as string,
-        battery: Number(formData.get("battery")),
-        condition: formData.get("condition") as string,
-        description: formData.get("description") as string,
-        imageUrl: formData.get("imageUrl") as string,
-      },
-    })
+    try {
+      await db.product.create({
+        data: {
+          name: String(formData.get("name") || ""),
+          price: Number(formData.get("price") || 0),
+          storage: String(formData.get("storage") || ""),
+          color: String(formData.get("color") || ""),
+          battery: Number(formData.get("battery") || 0),
+          condition: String(formData.get("condition") || ""),
+          description: String(formData.get("description") || ""),
+          imageUrl: String(formData.get("imageUrl") || ""),
+        },
+      })
+    } catch (err) {
+      console.error("Create product error:", err)
+      throw new Error("Failed to create product")
+    }
 
     redirect("/admin/products")
   }
 
   return (
     <main className="min-h-screen bg-black text-white p-10">
-      <h1 className="text-4xl font-bold mb-10">
-        Add Product
-      </h1>
+      <h1 className="text-3xl font-bold mb-8">Create Product</h1>
 
-      <form
-        action={createProduct}
-        className="max-w-2xl space-y-5"
-      >
-        <input
-          name="name"
-          placeholder="Product Name"
-          className="w-full p-4 rounded-xl bg-zinc-900"
-        />
+      <form action={createProduct} className="grid gap-4 max-w-xl">
+        <input name="name" placeholder="Name" className="p-3 bg-zinc-900 rounded" />
 
-        <input
-          name="price"
-          placeholder="Price"
-          type="number"
-          className="w-full p-4 rounded-xl bg-zinc-900"
-        />
+        <input name="price" type="number" placeholder="Price" className="p-3 bg-zinc-900 rounded" />
 
-        <input
-          name="storage"
-          placeholder="Storage"
-          className="w-full p-4 rounded-xl bg-zinc-900"
-        />
+        <input name="storage" placeholder="Storage" className="p-3 bg-zinc-900 rounded" />
 
-        <input
-          name="color"
-          placeholder="Color"
-          className="w-full p-4 rounded-xl bg-zinc-900"
-        />
+        <input name="color" placeholder="Color" className="p-3 bg-zinc-900 rounded" />
 
-        <input
-          name="battery"
-          placeholder="Battery Health"
-          type="number"
-          className="w-full p-4 rounded-xl bg-zinc-900"
-        />
+        <input name="battery" type="number" placeholder="Battery %" className="p-3 bg-zinc-900 rounded" />
 
-        <input
-          name="condition"
-          placeholder="Condition"
-          className="w-full p-4 rounded-xl bg-zinc-900"
-        />
+        <input name="condition" placeholder="Condition" className="p-3 bg-zinc-900 rounded" />
 
-        <textarea
-          name="description"
-          placeholder="Description"
-          className="w-full p-4 rounded-xl bg-zinc-900"
-        />
+        <textarea name="description" placeholder="Description" className="p-3 bg-zinc-900 rounded" />
 
-        <input
-          name="imageUrl"
-          placeholder="Image URL"
-          className="w-full p-4 rounded-xl bg-zinc-900"
-        />
+        <input name="imageUrl" placeholder="Image URL" className="p-3 bg-zinc-900 rounded" />
 
-        <button
-          className="bg-white text-black px-8 py-4 rounded-xl font-bold"
-        >
+        <button className="bg-white text-black p-3 rounded font-semibold">
           Create Product
         </button>
       </form>

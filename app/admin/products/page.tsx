@@ -20,11 +20,11 @@ export default async function AdminProductsPage() {
 
   return (
     <main className="min-h-screen bg-black text-white">
-      
+
       {/* Navbar */}
       <div className="border-b border-zinc-800 px-10 py-6">
         <div className="flex items-center justify-between">
-          
+
           <div>
             <p className="text-zinc-400 text-sm mb-2">
               RpGadget Dashboard
@@ -57,6 +57,7 @@ export default async function AdminProductsPage() {
 
       {/* Content */}
       <div className="p-10">
+
         {products.length === 0 ? (
           <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-16 text-center">
             <h2 className="text-3xl font-bold mb-4">
@@ -76,14 +77,16 @@ export default async function AdminProductsPage() {
           </div>
         ) : (
           <div className="grid gap-5">
+
             {products.map((product: typeof products[number]) => (
               <div
                 key={product.id}
                 className="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 hover:border-zinc-700 transition"
               >
-                
+
                 {/* Product Info */}
                 <div className="flex items-center gap-5">
+
                   <img
                     loading="lazy"
                     src={product.imageUrl}
@@ -122,6 +125,7 @@ export default async function AdminProductsPage() {
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-3">
+
                   <Link
                     href={`/products/${product.id}`}
                     className="border border-zinc-700 px-5 py-3 rounded-xl hover:bg-zinc-800 transition"
@@ -153,12 +157,15 @@ export default async function AdminProductsPage() {
                       Delete
                     </button>
                   </form>
+
                 </div>
 
               </div>
             ))}
+
           </div>
         )}
+
       </div>
     </main>
   )
