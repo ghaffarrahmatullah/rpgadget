@@ -3,18 +3,18 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 interface ProductDetailProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function ProductDetailPage({
   params,
 }: ProductDetailProps) {
+  const { id } = await params
+
   const product = await db.product.findUnique({
-    where: {
-      id: params.id,
-    },
+    where: { id },
   })
 
   if (!product) {
