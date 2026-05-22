@@ -3,7 +3,6 @@ import { redirect } from "next/navigation"
 
 import { db } from "@/lib/db"
 import { auth } from "@/lib/auth"
-
 import LogoutButton from "@/components/logout-button"
 
 export default async function AdminProductsPage() {
@@ -77,7 +76,7 @@ export default async function AdminProductsPage() {
           </div>
         ) : (
           <div className="grid gap-5">
-            {products.map((product) => (
+            {products.map((product: typeof products[number]) => (
               <div
                 key={product.id}
                 className="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 hover:border-zinc-700 transition"
@@ -155,6 +154,7 @@ export default async function AdminProductsPage() {
                     </button>
                   </form>
                 </div>
+
               </div>
             ))}
           </div>

@@ -122,7 +122,7 @@ export default async function HomePage() {
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
+            {products.map((product: typeof products[number]) => (
               <Link
                 href={`/products/${product.id}`}
                 key={product.id}

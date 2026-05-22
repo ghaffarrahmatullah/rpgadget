@@ -202,7 +202,7 @@ export default async function ProductsPage({
       <section className="px-6 pb-32">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           
-          {products.map((product) => (
+          {products.map((product: typeof products[number]) => (
             <Link
               key={product.id}
               href={`/products/${product.id}`}

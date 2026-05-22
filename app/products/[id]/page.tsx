@@ -163,7 +163,7 @@ Apakah masih tersedia?`
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            {relatedProducts.map((item) => (
+            {relatedProducts.map((item: typeof relatedProducts[number]) => (
               <Link
                 key={item.id}
                 href={`/products/${item.id}`}
