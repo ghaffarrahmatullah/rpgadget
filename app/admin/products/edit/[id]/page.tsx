@@ -1,16 +1,35 @@
 import { db } from "@/lib/db"
 import { redirect } from "next/navigation"
 
-export default async function EditProductPage({
-  params,
-}: {
-  params: { id: string }
-}) {
+type Props = {
+  params: Promise<{ id: string }>
+}
+
+export default async function EditProductPage({ params }: Props) {
+  const { id } = await params
+
   const product = await db.product.findUnique({
-    where: { id: params.id },
+    where: { id },
   })
 
-  if (!product) {
+  if (!product) return redirect("/admin/products")
+
+  async function updateProduct(formData: FormData) {
+    "use server"
+
+    await db.product.update({
+      where: { id },
+      data: {
+        name: formData.get("name") as string,
+        price: Number(formData.get("price")),
+        imageUrl: formData.get("imageUrl") as string,
+        storage: formData.get("storage") as string,
+        color: formData.get("color") as string,
+        condition: formData.get("condition") as string,
+        battery: Number(formData.get("battery")),
+      },
+    })
+
     redirect("/admin/products")
   }
 
@@ -22,105 +41,23 @@ export default async function EditProductPage({
           Edit Product
         </h1>
 
-        <form
-          action={async (formData) => {
-            "use server"
+        <form action={updateProduct} className="space-y-6">
 
-            await db.product.update({
-              where: { id: product.id },
-              data: {
-                name: formData.get("name") as string,
-                price: Number(formData.get("price")),
-                imageUrl: formData.get("imageUrl") as string,
-                storage: formData.get("storage") as string,
-                color: formData.get("color") as string,
-                condition: formData.get("condition") as string,
-                battery: Number(formData.get("battery")),
-              },
-            })
+          <input name="name" defaultValue={product.name ?? ""} />
+          <input name="price" defaultValue={product.price ?? 0} />
+          <input name="imageUrl" defaultValue={product.imageUrl ?? ""} />
+          <input name="storage" defaultValue={product.storage ?? ""} />
+          <input name="color" defaultValue={product.color ?? ""} />
+          <input name="condition" defaultValue={product.condition ?? ""} />
+          <input name="battery" defaultValue={product.battery ?? 100} />
 
-            // ✅ redirect setelah update berhasil
-            redirect("/admin/products")
-          }}
-          className="space-y-6"
-        >
+          <button
+            type="submit"
+            className="bg-white text-black px-8 py-4 rounded-full"
+          >
+            Save Changes
+          </button>
 
-          {/* NAME */}
-          <input
-            name="name"
-            defaultValue={product.name ?? ""}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-white/30 transition"
-            placeholder="Product Name"
-          />
-
-          {/* PRICE */}
-          <input
-            name="price"
-            type="number"
-            defaultValue={product.price ?? 0}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-white/30 transition"
-            placeholder="Price"
-          />
-
-          {/* IMAGE */}
-          <input
-            name="imageUrl"
-            defaultValue={product.imageUrl ?? ""}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-white/30 transition"
-            placeholder="Image URL"
-          />
-
-          {/* STORAGE */}
-          <input
-            name="storage"
-            defaultValue={product.storage ?? ""}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-white/30 transition"
-            placeholder="Storage (e.g. 128GB)"
-          />
-
-          {/* COLOR */}
-          <input
-            name="color"
-            defaultValue={product.color ?? ""}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-white/30 transition"
-            placeholder="Color"
-          />
-
-          {/* CONDITION */}
-          <input
-            name="condition"
-            defaultValue={product.condition ?? ""}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-white/30 transition"
-            placeholder="Condition (New / Like New / Second)"
-          />
-
-          {/* BATTERY */}
-          <input
-            name="battery"
-            type="number"
-            defaultValue={product.battery ?? 100}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-white/30 transition"
-            placeholder="Battery %"
-          />
-
-          {/* BUTTONS */}
-          <div className="flex gap-4 pt-4">
-
-            <button
-              type="submit"
-              className="bg-white text-black px-8 py-4 rounded-full font-bold hover:scale-105 transition"
-            >
-              Save Changes
-            </button>
-
-            <a
-              href="/admin/products"
-              className="border border-white/10 px-8 py-4 rounded-full hover:bg-white/10 transition"
-            >
-              Cancel
-            </a>
-
-          </div>
         </form>
       </div>
     </main>
