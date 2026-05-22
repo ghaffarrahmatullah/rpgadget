@@ -89,9 +89,7 @@ export default async function ProductsPage({
               Products
             </Link>
 
-            <Link href="/admin/products" className="hover:text-white transition">
-              Admin
-            </Link>
+
           </div>
         </div>
       </nav>

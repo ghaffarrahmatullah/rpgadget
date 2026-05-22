@@ -268,9 +268,7 @@ export default async function HomePage() {
               Products
             </Link>
 
-            <Link href="/admin/products">
-              Admin
-            </Link>
+            
           </div>
         </div>
       </footer>
